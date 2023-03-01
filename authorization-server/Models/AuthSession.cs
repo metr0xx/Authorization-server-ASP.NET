@@ -1,8 +1,11 @@
-﻿namespace authorization_server.Models;
+﻿using System.Runtime.InteropServices.JavaScript;
+
+namespace authorization_server.Models;
 
 public class AuthSession
 {
-    private int userId { get; set; }
-    private string accessToken { get; set; }
-    private string refreshToken { get; set; }
+    public int UserId { get; set; }
+    public string AccessToken { get; set; }
+    public string RefreshToken { get; set; }
+    public DateTime SessionStart { get; set; }
 }
