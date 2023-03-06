@@ -1,33 +1,33 @@
-using System.Data;
-using System.Text.Json;
+using authorization_server;
 using authorization_server.DB;
-using authorization_server.Models;
-using Azure.Core;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualBasic.CompilerServices;
-using Utils = authorization_server.Utils;
 
-var builder = WebApplication.CreateBuilder(args);
+var builder = Builder.Build;
 
-var connection = builder.Configuration.GetConnectionString("DefaultConnection");
+var connection = Builder.Connection;
+
 builder.Services.AddDbContext<DBContext>(options => options.UseSqlServer(connection));
+builder.Services.AddCors();
 
 var app = builder.Build();
 
-app.MapPost("/login/", (string loginData) =>
+app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyHeader());
+
+app.MapPost("/login", async (context) =>
 {
-    var values = JsonSerializer.Deserialize<Dictionary<string, string>>(loginData);
-    return JsonSerializer.Serialize(Interaction.Login(values["login"], values["password"], values["refreshToken"]));
+    var values = await context.Request.ReadFromJsonAsync<Dictionary<string, string>>();
+    await context.Response.WriteAsJsonAsync(Interaction.Login(values["login"], values["password"], values["refreshToken"]));
 });
 
-app.Map("/register/", (string registerData) =>
+app.MapPost("/register", async (context) =>
 {
-    var values = JsonSerializer.Deserialize<Dictionary<string, string>>(registerData);
-    return JsonSerializer.Serialize(Interaction.Register(values["login"], values["password"]));
+    var values =  await context.Request.ReadFromJsonAsync<Dictionary<string, string>>();
+    await context.Response.WriteAsJsonAsync(Interaction.Register(values["login"], values["password"]));
 });
 
 app.MapGet("/", () =>
 {
-    return Utils.generateToken();
+    return Interaction.Db.Users.ToList();
 });
+
 app.Run();
