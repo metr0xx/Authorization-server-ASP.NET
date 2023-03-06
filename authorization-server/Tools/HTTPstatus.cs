@@ -1,4 +1,7 @@
-﻿namespace authorization_server.Tools;
+﻿using System.Net;
+using Microsoft.AspNetCore.WebUtilities;
+
+namespace authorization_server.Tools;
 
 public class HTTPstatus
 {

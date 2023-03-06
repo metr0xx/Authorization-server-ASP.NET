@@ -7,8 +7,9 @@ public class Utils
 {
     public static void clearSessions(int userId)
     {
-        DBContext.db.Sessions.Remove(DBContext.db.Sessions.Find((AuthSession sesion) => sesion.UserId == userId));
+        Interaction.Db.Sessions.ToList().Remove(Interaction.Db.Sessions.ToList().Find((AuthSession sesion) => sesion.Id == userId));
     }
+
     public static string generateToken()
     {
         var token = "";
