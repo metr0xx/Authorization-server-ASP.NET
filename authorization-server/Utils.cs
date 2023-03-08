@@ -8,6 +8,7 @@ public class Utils
     public static void clearSessions(int userId)
     {
         Interaction.Db.Sessions.ToList().Remove(Interaction.Db.Sessions.ToList().Find((AuthSession sesion) => sesion.Id == userId));
+        Interaction.Db.SaveChanges();
     }
 
     public static string generateToken()

@@ -11,9 +11,7 @@ public class Interaction
 
     public static Dictionary<string, object> Register(string login, string password)
     {
-        var users = new List<User>();
-        users.Add(Db.Users.Find((User? user) => user.Login == login));
-        if (users.Count > 0)
+        if (Db.Users.Any(u => u.Login == login))
         {
             return new Dictionary<string, object>()
             {
@@ -62,11 +60,11 @@ public class Interaction
 
     public static Dictionary<string, object> sessionRefresh(string refreshToken)
     {
-        var sessions = new List<AuthSession>();
-        sessions.Add(Db.Sessions.Find((AuthSession? auth) => auth.RefreshToken == refreshToken));
-        if (sessions.Count > 0)
+        /*var sessions = new List<AuthSession>();
+        sessions.Add(Db.Sessions.Find((AuthSession? auth) => auth.RefreshToken == refreshToken));*/
+        if (Db.Sessions.Any(session => session.RefreshToken == refreshToken))
         {
-            var session = sessions[0];
+            var session = Db.Sessions.ToList()[0];
             var accessToken = Utils.generateToken();
             var newRefreshToken = Utils.generateToken();
             session.RefreshToken = newRefreshToken;
